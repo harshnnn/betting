@@ -4,7 +4,7 @@ import React, { useEffect, useRef, useState } from "react";
 
 const COLORS = ["red", "green", "blue"];
 
-const Lotre = ({ onClose }) => {
+const VrBollywoodKiss = ({ onClose }) => {
   const canvasRef = useRef(null);
   const [selectedColor, setSelectedColor] = useState(null);
   const [balance, setBalance] = useState(100); // starting balance
@@ -111,4 +111,4 @@ const Lotre = ({ onClose }) => {
   );
 };
 
-export default Lotre;
+export default VrBollywoodKiss;
