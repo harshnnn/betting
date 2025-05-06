@@ -1,0 +1,133 @@
+"use client"
+
+import React, { useState } from 'react';
+
+const casinoTabs = [
+  "ALL", "RECENT", "MAC88", "MAC EXCITE", "FUN GAMES",
+  "MAC88 VIRTUALS", "COLOR PREDICTION", "SMARTSOFT", "TURBOGAMES",
+  "EVOLUTION", "EZUGI GAMING", "VIVO GAMING","EVOPLAY ENTERNATIMENT"
+];
+
+const gameTypes = [
+  "DRAGON TIGER", "BACCARAT", "SICBO", "ROULETTE", "POKER", "LUCKY7",
+  "ANDARBAHAR", "TEENPATTI", "32CARDS", "OTHERS", "LOTTERY",
+  "CRICKETWAR", "HI LOW", "SLOTS", "FUN GAMES", "COLOR PREDICTION"
+];
+
+const casinoGamesData = {
+  "ALL": [
+    "DRAGON TIGER", "DRAGON TIGER LION", "1 DAY DRAGON TIGER",
+    "DRAGON TIGER 2", "VR 20-20 DTL", "VR DRAGON TIGER",
+    "LIGHTNING DRAGON TIGER", "DRAGON TIGER ONE DAY", "FIRST PERSON DRAGON TIGER",
+    "DRAGON TIGER LIVE", "DRAGON TIGER DA SORTE", "DRAGON TIGER IMPERIAL",
+    "DRAGON & TIGER", "DRAGON-TIGER2", "DRAGON TIGER SEXY",
+    "DRAGON TIGER LIVE88"
+  ],
+  "EVOPLAY ENTERNATIMENT": [],
+  "VIVO GAMING":[],
+  "EZUGI GAMING":[],
+  "EVOLUTION": [],
+  "SMARTSOFT": [],
+  "TURBOGAMES": [],
+  "MAC88 VIRTUALS" : ["VR LUCKY 7", "VR LUCKY 5", "LUCKY 15", "VR TRIO", "VR BOLLYWOOD CASINO", "VR AMAR AKBAR ANTHONY", "CASINO MEET VR"],
+  "MAC EXCITE":["SUPER OVER 1 DAY", "CRICKET MATCH 20-20", "INSTANT SUPER OVER", "DRAGON TIGER", "DRAGON TIGER LION", "1 DAY DRAGON TIGER"],
+  "FUN GAMES": ["ROCK PAPER SCISSOR", "VALENTINE", " LANKESH", "VR BOLLOWOOD KISS"],
+  "COLOR PREDICTION": ["Color Game", "SD Lotto", "3k Lotre"]
+};
+
+const gameThumbnails = {
+  "DRAGON TIGER": "/images/dragon_tiger_1.png",
+  "DRAGON TIGER LION": "/images/dragon_tiger_lion.png",
+  "1 DAY DRAGON TIGER": "/images/1day_dragon_tiger.png",
+  "DRAGON TIGER 2": "/images/dragon_tiger_2.png",
+  "VR 20-20 DTL": "/images/vr_dtl.png",
+  "VR DRAGON TIGER": "/images/vr_dragon_tiger.png",
+  "LIGHTNING DRAGON TIGER": "/images/lightning_dragon_tiger.png",
+  "DRAGON TIGER ONE DAY": "/images/dragon_tiger_one_day.png",
+  "FIRST PERSON DRAGON TIGER": "/images/first_person_dragon_tiger.png",
+  "DRAGON TIGER LIVE": "/images/dragon_tiger_live.png",
+  "DRAGON TIGER DA SORTE": "/images/dragon_tiger_da_sorte.png",
+  "DRAGON TIGER IMPERIAL": "/images/dragon_tiger_imperial.png",
+  "DRAGON & TIGER": "/images/dragon_and_tiger.png",
+  "DRAGON-TIGER2": "/images/dragon_tiger2_bonus.png",
+  "DRAGON TIGER SEXY": "/images/dragon_tiger_sexy.png",
+  "DRAGON TIGER LIVE88": "/images/dragon_tiger_live88.png",
+  "Color Game": "/images/color_game.png",
+  "SD Lotto": "/images/sd_lotto.png",
+  "3k Lotre": "/images/3k_lotre.png"
+};
+
+const CasinoPage = () => {
+  const [selectedTab, setSelectedTab] = useState("ALL");
+  const [selectedGameType, setSelectedGameType] = useState("DRAGON TIGER");
+
+  const currentGames = casinoGamesData[selectedTab] || casinoGamesData[selectedGameType] || casinoGamesData["ALL"];
+
+  return (
+    <div className="p-4">
+      <h2 className="text-blue-900 font-bold text-lg">🎰 CASINO</h2>
+
+      <div className="flex overflow-x-auto gap-4 mt-2 bg-blue-900 text-white font-semibold text-sm px-2 py-1">
+        {casinoTabs.map((tab, index) => (
+          <button
+            key={index}
+            className={`px-4 py-1 ${selectedTab === tab ? 'bg-white text-blue-900 font-bold' : ''}`}
+            onClick={() => setSelectedTab(tab)}
+          >
+            {tab}
+          </button>
+        ))}
+      </div>
+
+      <div className="flex overflow-x-auto gap-6 mt-4 bg-gray-100 px-2 py-2">
+        {gameTypes.map((type, index) => (
+          <button
+            key={index}
+            className={`flex flex-col items-center text-xs font-semibold ${selectedGameType === type ? 'text-blue-700 underline' : ''}`}
+            onClick={() => setSelectedGameType(type)}
+          >
+            <div className="w-10 h-10 bg-gray-300 rounded-full flex items-center justify-center">
+              🎮
+            </div>
+            {type}
+          </button>
+        ))}
+      </div>
+
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-6">
+        {currentGames.map((game, index) => (
+          <div key={index} className="border shadow rounded-md overflow-hidden">
+            <img
+              src={gameThumbnails[game] || "/images/default_game.png"}
+              alt={game}
+              className="w-full h-32 object-cover"
+            />
+            <div className="bg-blue-800 text-white text-sm text-center py-1 font-semibold">
+              {game}
+            </div>
+          </div>
+        ))}
+      </div>
+
+      <div className="flex justify-end mt-4">
+        <img src="/images/support.png" alt="Customer Support" className="w-20" />
+      </div>
+    </div>
+  );
+};
+
+export default CasinoPage;
+
+
+
+
+
+
+
+import ColorGame from '../../../components/casino-games/ColorGame';
+import SDLotto from '../../../components/casino-games/SDLotto';
+import Lotre3k from '../../../components/casino-games/3kLotre';
+import RockPaperScissor from '../../../components/fun-games/RockPaperScissor';
+import Valentine from '../../../components/fun-games/Valentine';
+import Lankesh from '../../../components/fun-games/Lankesh';
+import VrBollywood from '../../../components/fun-games/VrBollywoodKiss';

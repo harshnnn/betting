@@ -1,0 +1,179 @@
+// ColorGameApp.js
+"use client";
+
+import React, { useEffect, useRef, useState } from "react";
+
+const COLORS = ["red", "green", "violet"];
+const GAME_MODES = ["30Sec", "1Min", "3Min", "5Min"];
+const GAME_TIMINGS = { "30Sec": 30, "1Min": 60, "3Min": 180, "5Min": 300 };
+
+const ColorGameApp = () => {
+  const canvasRef = useRef(null);
+  const [selectedColor, setSelectedColor] = useState(null);
+  const [balance, setBalance] = useState(100);
+  const [bet, setBet] = useState(0);
+  const [timer, setTimer] = useState(GAME_TIMINGS["30Sec"]);
+  const [isGameRunning, setIsGameRunning] = useState(false);
+  const [result, setResult] = useState(null);
+  const [history, setHistory] = useState([]);
+  const [myBets, setMyBets] = useState([]);
+  const [gameMode, setGameMode] = useState("30Sec");
+  const [roundId, setRoundId] = useState(Date.now());
+  const [showResultScreen, setShowResultScreen] = useState(false);
+
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    const ctx = canvas.getContext("2d");
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+
+    const draw = () => {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      COLORS.forEach((color, index) => {
+        ctx.fillStyle = color;
+        ctx.fillRect((canvas.width / 3) * index, canvas.height / 4, canvas.width / 3, canvas.height / 2);
+      });
+    };
+    draw();
+  }, []);
+
+  useEffect(() => {
+    let interval;
+    if (isGameRunning && timer > 0) {
+      interval = setInterval(() => {
+        setTimer((prev) => prev - 1);
+      }, 1000);
+    } else if (isGameRunning && timer === 0) {
+      const winColor = COLORS[Math.floor(Math.random() * COLORS.length)];
+      const newResult = {
+        round: roundId,
+        number: Math.floor(Math.random() * 10),
+        color: winColor,
+        size: bet < 5 ? "Small" : "Big",
+      };
+
+      setHistory((prev) => [newResult, ...prev]);
+      if (selectedColor === winColor) {
+        setBalance((prev) => prev + bet);
+        setResult(`You won! Winning color: ${winColor}`);
+      } else {
+        setBalance((prev) => prev - bet);
+        setResult(`You lost! Winning color: ${winColor}`);
+      }
+      setMyBets((prev) => [
+        ...prev,
+        {
+          round: roundId,
+          bet,
+          color: selectedColor,
+        },
+      ]);
+      setShowResultScreen(true);
+      setTimeout(() => setShowResultScreen(false), 3000);
+      setIsGameRunning(false);
+      setRoundId(Date.now());
+    }
+    return () => clearInterval(interval);
+  }, [isGameRunning, timer]);
+
+  const startGame = () => {
+    if (!selectedColor || bet <= 0 || bet > balance) return;
+    setResult(null);
+    setTimer(GAME_TIMINGS[gameMode]);
+    setIsGameRunning(true);
+  };
+
+  return (
+    <div className="fixed top-0 left-0 w-full h-full z-50 bg-black text-white">
+      <canvas ref={canvasRef} className="absolute top-0 left-0 w-full h-full z-0" />
+
+      {/* Navbar */}
+      <div className="bg-blue-900 text-white px-4 py-2 flex justify-between items-center relative z-10">
+        <div className="font-bold text-xl">🎮 99EXCH</div>
+        <div>User123</div>
+      </div>
+
+      {/* Game Mode */}
+      <div className="flex justify-center space-x-4 mt-4 relative z-10">
+        {GAME_MODES.map((mode) => (
+          <button
+            key={mode}
+            onClick={() => setGameMode(mode)}
+            className={`px-4 py-2 rounded-full ${gameMode === mode ? "bg-blue-600" : "bg-gray-700"}`}
+          >
+            {mode}
+          </button>
+        ))}
+      </div>
+
+      {/* Game Controls */}
+      <div className="absolute top-24 left-5 z-10">
+        <p className="text-xl font-bold">Balance: ₹{balance}</p>
+        <div className="flex gap-2 mt-2">
+          {COLORS.map((color) => (
+            <button
+              key={color}
+              onClick={() => setSelectedColor(color)}
+              className={`px-4 py-2 rounded-lg ${selectedColor === color ? "bg-white text-black" : `bg-${color}-600`}`}
+            >
+              {color.toUpperCase()}
+            </button>
+          ))}
+        </div>
+
+        <input
+          type="number"
+          value={bet}
+          onChange={(e) => setBet(Number(e.target.value))}
+          placeholder="Enter Bet Amount"
+          className="mt-2 px-3 py-1 rounded text-black"
+        />
+
+        <button
+          onClick={startGame}
+          className="ml-2 bg-yellow-400 hover:bg-yellow-300 px-4 py-2 rounded"
+        >
+          Start
+        </button>
+
+        <p className="mt-2">Timer: {timer}s</p>
+        {result && <p className="mt-2 font-bold">{result}</p>}
+      </div>
+
+      {/* Result Overlay */}
+      {showResultScreen && (
+        <div className="absolute inset-0 bg-blue-700 bg-opacity-90 z-20 flex flex-col items-center justify-center">
+          <div className="text-6xl font-extrabold">🏆</div>
+          <div className="text-4xl font-bold">Round Result</div>
+          <div className="text-3xl mt-2">{result}</div>
+        </div>
+      )}
+
+      {/* Game History & Bets */}
+      <div className="absolute bottom-0 w-full bg-blue-900 z-10 flex">
+        <div className="w-1/2 p-4">
+          <h3 className="text-xl font-bold">Game History</h3>
+          <ul className="text-sm mt-2 max-h-40 overflow-y-auto">
+            {history.map((h, i) => (
+              <li key={i} className="border-b py-1">
+                #{h.round}: Number {h.number} - {h.size} - {h.color.toUpperCase()}
+              </li>
+            ))}
+          </ul>
+        </div>
+        <div className="w-1/2 p-4">
+          <h3 className="text-xl font-bold">My Bets</h3>
+          <ul className="text-sm mt-2 max-h-40 overflow-y-auto">
+            {myBets.map((b, i) => (
+              <li key={i} className="border-b py-1">
+                #{b.round}: ₹{b.bet} on {b.color.toUpperCase()}
+              </li>
+            ))}
+          </ul>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default ColorGameApp;
