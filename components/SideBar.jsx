@@ -34,25 +34,25 @@ const SideBar = () => {
     const [sportsActive, setSportsActive] = useState(false);
 
     return (
-        <div className='flex-1'>
+        <div className='flex-1 bg-[#ccc]'>
             <div>
-                <p onClick={()=>setOthersActive(!othersActive)} className='flex bg-blue-500 text-white font-bold cursor-pointer'>Others</p>
+                <p onClick={()=>setOthersActive(!othersActive)} className='flex p-1 text-xl bg-blue-600 text-white font-medium cursor-pointer'>Others</p>
                 {othersActive && (
-                    <div>
+                    <div className='m-2 shadow'>
                         {data.map((item, index) => (
-                            <p>{item}</p>
+                            <p className='shadow'>{item}</p>
                         ))}
                     </div>
                 )}
             </div>
             <div>
-                <p onClick={()=>setSportsActive(!sportsActive)} className='flex bg-blue-500 text-white font-bold cursor-pointer'>
+                <p onClick={()=>setSportsActive(!sportsActive)} className='flex p-1 text-xl bg-blue-600 text-white font-medium cursor-pointer'>
                     All Sports
                 </p>
                 {sportsActive && (
-                    <div>
+                    <div className='m-2 shadow'>
                         {sports.map((item, index) => (
-                            <p>{item}</p>
+                            <p className='shadow'>{item}</p>
                         ))}
                     </div>
                 )}
