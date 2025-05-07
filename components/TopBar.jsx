@@ -13,12 +13,12 @@ const TopBar = () => {
         <>
             <style jsx global>{`
                 @keyframes scroll {
-                    0% { transform: translateX(100%); }
-                    100% { transform: translateX(-100%); }
+                    0% { transform: translateX(10%); }
+                    100% { transform: translateX(-10%); }
                 }
             `}</style>
 
-            <div className='flex justify-between items-center bg-blue-500 px-10 py-5'>
+            <div className='flex  justify-between items-center bg-[#1a3da6] px-10 py-5'>
                 <h1 className="text-3xl">❌</h1>
 
                 <div className='flex flex-col '>
@@ -80,16 +80,16 @@ const TopBar = () => {
                         </div>
                     </div>
 
-                    {/* <div className= 'overflow-hidden' >
+                    {/* <div className= 'overflow-hidden!important' >
                         <div className="overflow-hidden whitespace-nowrap">
-                            <div className="inline-block animate-[scroll_80s_linear_infinite] text-white font-bold px-0">
+                            <div className="block animate-[scroll_80s_linear_infinite] text-black font-bold px-0">
                             🏆𝐈𝐍𝐃𝐈𝐀𝐍 𝐏𝐑𝐄𝐌𝐈𝐄𝐑 𝐋𝐄𝐀𝐆𝐔𝐄(𝐈𝐏𝐋) 🏆𝐂𝐔𝐏 𝐖𝐈𝐍𝐍𝐄𝐑 𝐌𝐀𝐑𝐊𝐄𝐓 𝐁𝐄𝐓𝐒 𝐒𝐓𝐀𝐑𝐓𝐄𝐃 𝐈𝐍 𝐎𝐔𝐑
                              𝐄𝐗𝐂𝐇𝐀𝐍𝐆𝐄🏆 🏆𝐏𝐀𝐊𝐈𝐒𝐓𝐀𝐍 𝐒𝐔𝐏𝐄𝐑 𝐋𝐄𝐀𝐆𝐔𝐄(𝐏𝐒𝐋) 𝟐𝟎𝟐𝟓 𝐂𝐔𝐏 𝐖𝐈𝐍𝐍𝐄𝐑 𝐌𝐀𝐑𝐊𝐄𝐓 𝐁𝐄𝐓𝐒 
                              𝐒𝐓𝐀𝐑𝐓𝐄𝐃 𝐈𝐍 𝐎𝐔𝐑 𝐄𝐗𝐂𝐇𝐀𝐍𝐆𝐄🏆 𝐎𝐔𝐑 𝐄𝐗𝐂𝐋𝐔𝐒𝐈𝐕𝐄 𝐏𝐑𝐄𝐌𝐈𝐔𝐌 𝐌𝐀𝐑𝐊𝐄𝐓 𝐅𝐎𝐑 (𝐒𝐑𝐋) 𝐈𝐒 
                              𝐍𝐎𝐖 𝐒𝐓𝐀𝐑𝐓𝐄𝐃 𝐈𝐍 𝐎𝐔𝐑 𝐄𝐗𝐂𝐇𝐀𝐍𝐆𝐄 , 𝐃𝐑𝐄𝐀𝐌 𝐁𝐈𝐆 𝐖𝐈𝐍 𝐁𝐈𝐆
                             </div>
                         </div>
-                    </div> */}
+                    </div>   */}
 
 
 

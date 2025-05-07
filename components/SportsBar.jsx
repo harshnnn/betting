@@ -3,7 +3,7 @@ import Link from 'next/link';
 import React, { useState } from 'react'
 
 const sports = [
-    "IPL", "Cricket", "Football", "Kabaddi", "Tennis", "Casino"
+    "IPL", "Cricket", "Football", "Kabaddi", "Tennis", "Casino",
 ]
 
 const SportsBar = () => {
