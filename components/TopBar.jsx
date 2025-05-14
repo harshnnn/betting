@@ -8,7 +8,6 @@ import { IoMdArrowDropdown } from "react-icons/io";
 const TopBar = () => {
     const [showDropdown, setShowDropdown] = useState(false);
 
-
     return (
         <>
             <style jsx global>{`
@@ -18,44 +17,40 @@ const TopBar = () => {
                 }
             `}</style>
 
-            <div className='flex  justify-between items-center bg-[#1a3da6] px-10 py-5'>
-                <h1 className="text-3xl">❌</h1>
+            <div className="flex flex-col bg-[#1a3da6] px-4 md:px-10 py-4 gap-4">
+                {/* Top Section */}
+                <div className="flex justify-between items-center">
+                    <h1 className="text-2xl md:text-3xl text-white">❌</h1>
 
-                <div className='flex flex-col '>
-                    <div className='flex gap-4 '>
-                        <button className="flex items-center cursor-pointer gap-1 bg-green-600 hover:bg-green-700 px-3 py-1 rounded-xl text-white border border-white">
+                    <div className="flex items-center space-x-2 md:space-x-4">
+                        <button className="flex items-center gap-1 bg-green-600 hover:bg-green-700 px-2 md:px-3 py-1 rounded text-white text-sm md:text-base">
                             <FaPiggyBank size={14} />
-                            DEPOSIT
+                            <span className="hidden sm:inline">DEPOSIT</span>
                         </button>
-                        <button className="flex items-center cursor-pointer gap-1 bg-red-600 hover:bg-red-700 px-3 py-1 rounded-xl text-white border border-white">
+                        <button className="flex items-center gap-1 bg-red-600 hover:bg-red-700 px-2 md:px-3 py-1 rounded text-white text-sm md:text-base">
                             <FaChartLine size={14} />
-                            WITHDRAWAL
+                            <span className="hidden sm:inline">WITHDRAWAL</span>
                         </button>
-                        <div className="flex items-center gap-2  text-white font-bold">
-                            <AiOutlineSearch size={32} className='cursor-pointer' />
-                            <span className='cursor-pointer'>Rules</span>
+                        <div className="flex items-center gap-1 md:gap-2 text-white font-bold">
+                            <AiOutlineSearch size={24} className="cursor-pointer" />
+                            <span className="hidden sm:inline cursor-pointer">Rules</span>
                         </div>
-
-                        <div>
-                            <div>
-                                <p className='text-white font-bold cursor-pointer'>Balance: 99.0</p>
-                            </div>
-
-                            <div>
-                                <p className='text-white font-bold underline cursor-pointer'>Exposure: 0</p>
-                            </div>
+                        <div className="text-white text-xs md:text-sm font-bold space-y-1 hidden sm:block">
+                            <p className="cursor-pointer">Balance: 99.0</p>
+                            <p className="underline cursor-pointer">Exposure: 0</p>
                         </div>
-
-                        <div className="relative cursor-pointer"
+                        {/* Dropdown */}
+                        <div
+                            className="relative"
                             onMouseEnter={() => setShowDropdown(true)}
-                            onMouseLeave={() => setShowDropdown(false)}>
-                            <div className="flex items-center gap-1 cursor-pointer text-white font-bold">
-                                <span>99bada1164</span>
+                            onMouseLeave={() => setShowDropdown(false)}
+                        >
+                            <div className="flex items-center gap-1 text-white font-bold cursor-pointer">
+                                <span className="text-sm md:text-base">99bada1164</span>
                                 <IoMdArrowDropdown size={16} />
                             </div>
-
                             {showDropdown && (
-                                <div className="absolute right-0 mt-1 w-48 bg-white text-black text-sm shadow-lg rounded">
+                                <div className="absolute right-0 mt-2 w-44 bg-white text-black text-sm shadow-lg rounded z-50">
                                     <ul className="py-1">
                                         {[
                                             "Account Statement",
@@ -64,9 +59,9 @@ const TopBar = () => {
                                             "Unsettled Bet",
                                             "Set Button Values",
                                             "Change Password"
-                                        ].map((item, i) => (
+                                        ].map((item, index) => (
                                             <li
-                                                key={i}
+                                                key={index}
                                                 className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
                                             >
                                                 {item}
@@ -79,22 +74,16 @@ const TopBar = () => {
                             )}
                         </div>
                     </div>
-
-                    {/* <div className= 'overflow-hidden!important' >
-                        <div className="overflow-hidden whitespace-nowrap">
-                            <div className="block animate-[scroll_80s_linear_infinite] text-black font-bold px-0">
-                            🏆𝐈𝐍𝐃𝐈𝐀𝐍 𝐏𝐑𝐄𝐌𝐈𝐄𝐑 𝐋𝐄𝐀𝐆𝐔𝐄(𝐈𝐏𝐋) 🏆𝐂𝐔𝐏 𝐖𝐈𝐍𝐍𝐄𝐑 𝐌𝐀𝐑𝐊𝐄𝐓 𝐁𝐄𝐓𝐒 𝐒𝐓𝐀𝐑𝐓𝐄𝐃 𝐈𝐍 𝐎𝐔𝐑
-                             𝐄𝐗𝐂𝐇𝐀𝐍𝐆𝐄🏆 🏆𝐏𝐀𝐊𝐈𝐒𝐓𝐀𝐍 𝐒𝐔𝐏𝐄𝐑 𝐋𝐄𝐀𝐆𝐔𝐄(𝐏𝐒𝐋) 𝟐𝟎𝟐𝟓 𝐂𝐔𝐏 𝐖𝐈𝐍𝐍𝐄𝐑 𝐌𝐀𝐑𝐊𝐄𝐓 𝐁𝐄𝐓𝐒 
-                             𝐒𝐓𝐀𝐑𝐓𝐄𝐃 𝐈𝐍 𝐎𝐔𝐑 𝐄𝐗𝐂𝐇𝐀𝐍𝐆𝐄🏆 𝐎𝐔𝐑 𝐄𝐗𝐂𝐋𝐔𝐒𝐈𝐕𝐄 𝐏𝐑𝐄𝐌𝐈𝐔𝐌 𝐌𝐀𝐑𝐊𝐄𝐓 𝐅𝐎𝐑 (𝐒𝐑𝐋) 𝐈𝐒 
-                             𝐍𝐎𝐖 𝐒𝐓𝐀𝐑𝐓𝐄𝐃 𝐈𝐍 𝐎𝐔𝐑 𝐄𝐗𝐂𝐇𝐀𝐍𝐆𝐄 , 𝐃𝐑𝐄𝐀𝐌 𝐁𝐈𝐆 𝐖𝐈𝐍 𝐁𝐈𝐆
-                            </div>
-                        </div>
-                    </div>   */}
-
-
-
-
                 </div>
+
+                {/* Optional scrolling ticker section */}
+                {/* 
+                <div className="overflow-hidden whitespace-nowrap">
+                    <div className="block animate-[scroll_80s_linear_infinite] text-white font-bold text-sm">
+                        🏆 IPL & PSL 2025 Winner Markets started in our Exchange! Dream Big, Win Big!
+                    </div>
+                </div> 
+                */}
             </div>
         </>
     )

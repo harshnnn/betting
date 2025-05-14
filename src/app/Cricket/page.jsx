@@ -11,6 +11,21 @@ const CricketPage = () => {
   const [error, setError] = useState(null)
   const router = useRouter()
 
+  // 1️⃣ Load cached matches from localStorage on first load
+  useEffect(() => {
+    const cachedData = localStorage.getItem('cricketMatches')
+    if (cachedData) {
+      try {
+        const parsed = JSON.parse(cachedData)
+        setMatches(parsed)
+        setLoading(false)
+      } catch (e) {
+        console.warn('Failed to parse cached data:', e)
+      }
+    }
+  }, [])
+
+  // 2️⃣ Setup WebSocket and replace state + cache with fresh data
   useEffect(() => {
     let ws
     let reconnectAttempts = 0
@@ -18,10 +33,11 @@ const CricketPage = () => {
     const reconnectInterval = 3000
 
     const connectWebSocket = () => {
-      ws = new WebSocket('wss://m2-w98e.onrender.com/ws')
+      ws = new WebSocket('wss://m1-alb5.onrender.com/ws')
 
       ws.onopen = () => {
         console.log('WebSocket connected')
+        ws.send(JSON.stringify({ type: 'events' }))
         setError(null)
         reconnectAttempts = 0
       }
@@ -29,19 +45,34 @@ const CricketPage = () => {
       ws.onmessage = (message) => {
         try {
           const data = JSON.parse(message.data)
-          if (data.type === 'match_list') {
-            if (!Array.isArray(data.matches)) {
-              throw new Error('Invalid match data')
+          const parsedMatches = (Array.isArray(data) ? data : []).map((match) => {
+            let runners = []
+            try {
+              runners = JSON.parse(match.runners || '[]')
+            } catch (e) {
+              console.warn('Failed to parse runners:', e)
             }
-            setMatches(data.matches)
-            setLoading(false)
-            sessionStorage.setItem('matchData', JSON.stringify(data.matches))
+
+            return {
+              ...match,
+              runners: runners.map((r) => ({
+                name: r.name || 'Unknown',
+                backOdds: r.backOdds ?? '-',
+                layOdds: r.layOdds ?? '-',
+              })),
+            }
+          })
+
+          // 🛑 Don't update state or localStorage if no new data
+          if (parsedMatches.length > 0) {
+            setMatches(parsedMatches)
+            localStorage.setItem('cricketMatches', JSON.stringify(parsedMatches))
           }
+
+          setLoading(false)
         } catch (err) {
           console.error('Error parsing WebSocket message:', err)
-          setError('API error')
-          setMatches([])
-          setLoading(false)
+          setError('Failed to process data')
         }
       }
 
@@ -55,7 +86,6 @@ const CricketPage = () => {
         console.log('WebSocket closed')
         if (reconnectAttempts < maxReconnectAttempts) {
           reconnectAttempts++
-          console.log(`Attempting to reconnect (${reconnectAttempts}/${maxReconnectAttempts})...`)
           setTimeout(connectWebSocket, reconnectInterval)
         } else {
           setError('Max reconnection attempts reached')
@@ -67,9 +97,7 @@ const CricketPage = () => {
     connectWebSocket()
 
     return () => {
-      if (ws) {
-        ws.close()
-      }
+      if (ws) ws.close()
     }
   }, [])
 
@@ -84,14 +112,14 @@ const CricketPage = () => {
               className="whitespace-nowrap cursor-pointer bg-blue-900 text-white text-2xs font-semibold px-3 py-1 rounded"
               onClick={() => router.push(`/Cricket/${match.event_id}`)}
             >
-              <span className="animate-blink flex cursor-pointer hover:underline"><BiCricketBall className='m-1 text-white' />
-              {match.event_name}</span>
+              <span className="animate-blink flex items-center hover:underline">
+                <BiCricketBall className='m-1 text-white' />
+                {match.event_name}
+              </span>
             </div>
           ))}
         </div>
       </div>
-
-
 
       <div className="flex justify-between items-center mb-2">
         <h1 className="text-2xs text-white bg-violet-950 px-2 py-1 font-medium">CRICKET</h1>
@@ -142,49 +170,40 @@ const CricketPage = () => {
             </div>
           </div>
 
+          {matches.map((match) => {
+            const { event_id, event_name, openDate, runners = [] } = match;
 
-          <div className="grid gap-2 shadow">
-            {matches.map((match) => {
-              const { event_id, event_name, openDate, runners = [] } = match
+            let oneBack = '-', oneLay = '-';
+            let drawBack = '-', drawLay = '-';
+            let twoBack = '-', twoLay = '-';
 
-              let oneBack = '-', oneLay = '-'
-              let drawBack = '-', drawLay = '-'
-              let twoBack = '-', twoLay = '-'
+            if (runners.length === 2) {
+              oneBack = runners[0]?.backOdds ?? '-';
+              oneLay = runners[0]?.layOdds ?? '-';
+              twoBack = runners[1]?.backOdds ?? '-';
+              twoLay = runners[1]?.layOdds ?? '-';
+            } else if (runners.length === 3 && runners[2]?.name === 'The Draw') {
+              oneBack = runners[0]?.backOdds ?? '-';
+              oneLay = runners[0]?.layOdds ?? '-';
+              drawBack = runners[2]?.backOdds ?? '-';
+              drawLay = runners[2]?.layOdds ?? '-';
+              twoBack = runners[1]?.backOdds ?? '-';
+              twoLay = runners[1]?.layOdds ?? '-';
+            }
 
-              if (runners.length === 2) {
-                oneBack = runners[0]?.backOdds ?? '-'
-                oneLay = runners[0]?.layOdds ?? '-'
-                twoBack = runners[1]?.backOdds ?? '-'
-                twoLay = runners[1]?.layOdds ?? '-'
-              } else if (runners.length === 3) {
-                const isDraw = runners[2]?.name === 'The Draw'
-                if (isDraw) {
-                  oneBack = runners[0]?.backOdds ?? '-'
-                  oneLay = runners[0]?.layOdds ?? '-'
-                  drawBack = runners[2]?.backOdds ?? '-'
-                  drawLay = runners[2]?.layOdds ?? '-'
-                  twoBack = runners[1]?.backOdds ?? '-'
-                  twoLay = runners[1]?.layOdds ?? '-'
-                }
-              }
+            return (
+              <div key={event_id} className="bg-white rounded-lg shadow-md p-0 m-1">
 
-              return (
-                <div
-                  key={event_id}
-                  className="bg-white rounded-lg shadow-2xs p-0 flex flex-col md:flex-row justify-between items-start md:items-center text-sm"
-                >
-
-                  {/* Game Name & Time */}
-
+                {/* Desktop View */}
+                <div className="hidden md:flex flex-row justify-between items-center">
                   <div
-                    className="cursor-pointer w-full md:w-[65%] mb-2 md:mb-0 hover:underline whitespace-nowrap overflow-hidden text-ellipsis"
+                    className="cursor-pointer w-[65%] hover:underline whitespace-nowrap overflow-hidden text-ellipsis"
                     onClick={() => router.push(`/Cricket/${event_id}`)}
                   >
                     {event_name} / {new Date(openDate).toLocaleString()}
                   </div>
 
-                  {/* Odds Section */}
-                  <div className="w-full md:w-[35%] flex justify-between text-center gap-1">
+                  <div className="w-[35%] flex justify-between text-center gap-1">
                     <div className="w-1/3 grid grid-cols-2 gap-1">
                       <div className="bg-[#72BBEF] p-1 rounded">{oneBack}</div>
                       <div className="bg-[#FAA9BA] p-1 rounded">{oneLay}</div>
@@ -199,10 +218,42 @@ const CricketPage = () => {
                     </div>
                   </div>
                 </div>
-              )
 
-            })}
-          </div>
+                {/* Mobile View */}
+                <div className="block md:hidden">
+                  <div
+                    className="cursor-pointer font-semibold text-base"
+                    onClick={() => router.push(`/Cricket/${event_id}`)}
+                  >
+                    {event_name}
+                  </div>
+                  <div className="text-red-500 text-sm mb-1">{new Date(openDate).toLocaleString()}</div>
+
+                  <div className="text-center flex  justify-around font-bold mb-1">
+                    <div>1</div>
+                    <div>X</div>
+                    <div>2</div>
+                  </div>
+
+                  <div className="grid grid-cols-3 gap-2">
+                    <div className="grid grid-cols-2 gap-1">
+                      <div className="bg-[#72BBEF] p-1 rounded text-center">{oneBack}</div>
+                      <div className="bg-[#FAA9BA] p-1 rounded text-center">{oneLay}</div>
+                    </div>
+                    <div className="grid grid-cols-2 gap-1">
+                      <div className="bg-[#72BBEF] p-1 rounded text-center">{drawBack}</div>
+                      <div className="bg-[#FAA9BA] p-1 rounded text-center">{drawLay}</div>
+                    </div>
+                    <div className="grid grid-cols-2 gap-1">
+                      <div className="bg-[#72BBEF] p-1 rounded text-center">{twoBack}</div>
+                      <div className="bg-[#FAA9BA] p-1 rounded text-center">{twoLay}</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            );
+          })}
+
         </>
       )}
     </div>

@@ -28,15 +28,24 @@ export default function RootLayout({ children }) {
       >
         <TopBar />
         <div>
-        <HomeBar />
+          <HomeBar />
         </div>
-        
-        <div className="flex flex-1">
+
+        {/* for desktop */}
+        <div className="hidden md:flex md:flex-1">
           <SideBar />
           <div className="flex-6 w-1/2 bg-gray-200 h-full">
             {children}
           </div>
         </div>
+
+        {/* for mobile */}
+         <div className="flex md:hidden w-full">
+          <div className="flex-6 w-[100%] bg-gray-200 h-full">
+            {children}
+          </div>
+        </div>
+  
       </body>
     </html>
   );

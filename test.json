@@ -1,0 +1,32 @@
+{
+    "event": "ping",
+    "tree": [
+        "",
+        {
+            "children": [
+                "Cricket",
+                {
+                    "children": [
+                        [
+                            "id",
+                            "34309840",
+                            "d"
+                        ],
+                        {
+                            "children": [
+                                "__PAGE__",
+                                {},
+                                "/Cricket/34309840",
+                                "refresh"
+                            ]
+                        }
+                    ]
+                }
+            ]
+        },
+        null,
+        null,
+        true
+    ],
+    "appDirRoute": true
+}
